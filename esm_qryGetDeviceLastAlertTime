@@ -33,9 +33,14 @@ $global:cookie = $null
 
 Function main
 {
+
+  # Parameters
+  $time_window = 15
+
   login;
   $result = qryGetDeviceLastAlertTime | ConvertFrom-Json
-  Write-Output ($result | select deviceName, deviceType, lastEvent, createTime)
+  $days = @{l="Days";e={((Get-Date) - [datetime]$_.lastEvent).Days}}
+  Write-Output ($result | Select-Object deviceName, deviceType, lastEvent, createTime, $days | Where-Object Days -ge $time_window)
 }
 
 
@@ -44,7 +49,7 @@ Function main
 #################################################################################################
 
 ###########################
-# Get DataSource LastAlertTime
+# Get DataSource Status
 ###########################
 
 Function qryGetDeviceLastAlertTime()
