@@ -35,12 +35,31 @@ Function main
 {
 
   # Parameters
-  $time_window = 15
+
+  # Interpret the returned "lastEvent" timestamp; depends on UserAgent/locale setting within PS
+  $time_string = "MM/dd/yyyy HH:mm:ss" 
+  # time range to identify idle data sources
+  $time_window = 15 
+  # do not display the following data source types
+  $excludedTypes = @( 
+    'McAfee Enterprise Log Manager'
+    'McAfee Event Receiver'
+    'McAfee Advanced Correlation Engine'
+    'Correlation Engine'
+    'NitroGuard IPS'
+    'ePolicy Orchestrator'
+  )
 
   login;
   $result = qryGetDeviceLastAlertTime | ConvertFrom-Json
-  $days = @{l="Days";e={((Get-Date) - [datetime]$_.lastEvent).Days}}
-  Write-Output ($result | Select-Object deviceName, deviceType, lastEvent, createTime, $days | Where-Object Days -ge $time_window)
+  $days = @{l="Days";e={((Get-Date) - [datetime]::ParseExact($_.lastEvent, $time_string, [System.Globalization.CultureInfo]::CurrentCulture)).Days}}
+  Write-Output (
+    $result |
+     where deviceType -NotIn $excludedTypes |
+     Select deviceName, deviceType, lastEvent, createTime, $days|
+     where Days -ge $time_window |
+     select deviceName, deviceType, Days, lastEvent
+  )
 }
 
 
