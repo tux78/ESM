@@ -1,4 +1,3 @@
-
 cls
 add-type @"
     using System.Net;
@@ -54,8 +53,11 @@ Function Main
     $dslist = @()
     Foreach ($ds in $datasources)
     {
-      Write-Host 'Policy rollOut for data source: ' $ds.name ' (' $ds.id ')'
-      $dslist += $ds.id
+      if ($ds.parsing)
+      {
+        Write-Host 'Policy rollOut for data source: ' $ds.name ' (' $ds.id ')'
+      }
+
     }
     $rollout = plcyRollPolicy $dslist
   }
