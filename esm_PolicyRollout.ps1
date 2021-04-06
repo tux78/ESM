@@ -56,6 +56,7 @@ Function Main
       if ($ds.parsing)
       {
         Write-Host 'Policy rollOut for data source: ' $ds.name ' (' $ds.id ')'
+        $dslist += $ds.id
       }
 
     }
