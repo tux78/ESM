@@ -40,7 +40,7 @@ Function Main
   $response = ''
   if ($null -eq $global:ercID -or $global:ercID -eq '')
   {
-    $response = devGetDeviceList @('RECEIVER')
+    $response = devGetDeviceList @('RECEIVER', 'RISK')
     $response = $response | ConvertFrom-Json
   } else {
     $response = '{"id" : "' + $ercID + '"}' | convertfrom-json
